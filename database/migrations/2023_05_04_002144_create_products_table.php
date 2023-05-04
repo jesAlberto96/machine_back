@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('path_img');
             $table->decimal('price', 9, 2);
-            $table->integer('cant');
+            $table->integer('amount');
             $table->timestamps();
         });
     }

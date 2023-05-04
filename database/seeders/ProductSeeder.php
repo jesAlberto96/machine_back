@@ -15,37 +15,37 @@ class ProductSeeder extends Seeder
         \App\Models\Product::create([
             'name' => "water",
             'path_img' => "water.png",
-            'cant' => 5,
+            'amount' => 5,
             'price' => 0.65,
         ]);
         \App\Models\Product::create([
             'name' => "Juice",
             'path_img' => "juice.png",
-            'cant' => 5,
+            'amount' => 5,
             'price' => 1.0,
         ]);
         \App\Models\Product::create([
             'name' => "Soda",
             'path_img' => "soda.png",
-            'cant' => 5,
+            'amount' => 5,
             'price' => 1.50,
         ]);
         \App\Models\Product::create([
             'name' => "Chocolate",
             'path_img' => "chocolate.png",
-            'cant' => 5,
+            'amount' => 5,
             'price' => 0.25,
         ]);
         \App\Models\Product::create([
             'name' => "Cocacola",
             'path_img' => "cocacola.png",
-            'cant' => 5,
+            'amount' => 5,
             'price' => 1,
         ]);
         \App\Models\Product::create([
             'name' => "Cookie",
             'path_img' => "cookie.png",
-            'cant' => 5,
+            'amount' => 5,
             'price' => 0.5,
         ]);
     }

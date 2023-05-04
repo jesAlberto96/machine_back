@@ -14,19 +14,19 @@ class CoinSeeder extends Seeder
     {
         \App\Models\Coin::create([
             'coin' => 0.05,
-            'cant' => 5,
+            'amount' => 5,
         ]);
         \App\Models\Coin::create([
             'coin' => 0.10,
-            'cant' => 5,
+            'amount' => 5,
         ]);
         \App\Models\Coin::create([
             'coin' => 0.25,
-            'cant' => 5,
+            'amount' => 5,
         ]);
         \App\Models\Coin::create([
             'coin' => 1.0,
-            'cant' => 5,
+            'amount' => 5,
         ]);
     }
 }

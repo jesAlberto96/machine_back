@@ -11,6 +11,6 @@ class coin extends Model
 
     protected $fillable = [
         'coin',
-        'cant',
+        'amount',
     ];
 }

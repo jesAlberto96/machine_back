@@ -13,40 +13,56 @@ class VendingController extends Controller
 {
     public function store(Request $request)
     {
-        // return number_format(array_sum($request->coins), 2);
-        $total_coins = number_format(array_sum($request->coins), 2);
         $product = $this->getProduct($request->product_id);
-        if (is_null($product)){
-            return Response::sendError("No se pudo completar esta solicitud", 409, [
-                "code" => 1 //code to there is not product
+
+        if (!$this->validateBuy($request, $product)){
+            return Response::sendError($this->errors['msg'], 409, [
+                "code" => $this->errors['code'] //code to there is not product
             ]);
         }
 
+        ProductRepository::update($product, [
+            "amount" => ($product->amount - 1)
+        ]);
+
+        $this->updateCoins($request->coins);
+
+        return Response::sendResponse($product);
+    }
+
+    private function validateBuy($request, $product){
+        $total_coins = number_format(array_sum($request->coins), 2);
+
+        if (is_null($product)){
+            $this->errors = array("msg" => "There is no this product", "code" => 1); //code to there is not product
+            return false;
+        }
+
         if (array_sum($request->coins) < $product->price){
-            return Response::sendError("No se pudo completar esta solicitud", 409, [
-                "code" => 2 //code to money insufficient
-            ]);
+            $this->errors = array("msg" => "Money insufficient", "code" => 2); //code to money insufficient
+            return false;
         } else {
             $change = number_format(($total_coins - $product->price), 2);
 
             $coins = CoinRepository::getAllByWhere(array(
-                ['cant', '>', 0],
+                ['amount', '>', 0],
                 ['coin', '<=', $change]
             ));
+
+            $this->data_change = $this->getChange($coins, $change);
+            if (!$this->data_change){
+                $this->errors = array("msg" => "Change insufficient", "code" => 3); //code to there is not change
+                return false;
+            }
         }
 
-
-return $coins;
-        $this->updateCoins($request->coins);
-
-        return Response::sendResponse($product);
-        return Response::sendResponse(VendingRepository::create() ?? []);
+        return true;
     }
 
     private function getProduct($product_id){
         return ProductRepository::getByWhere(array(
             ["id", $product_id],
-            ["cant", '>', 0],
+            ["amount", '>', 0],
         ));
     }
 
@@ -57,10 +73,26 @@ return $coins;
             ));
 
             $model_coin = CoinRepository::update($model_coin, [
-                'cant' => ($model_coin->cant + 1)
+                'amount' => ($model_coin->amount + 1)
             ]);
         }
 
+        CoinRepository::update($this->data_change["coin"], [
+            "amount" => ($this->data_change["coin"]->amount - $this->data_change["total_coins"])
+        ]);
+
         return true;
+    }
+
+    private function getChange($coins, $change){
+        foreach ($coins as $key => $coin) {
+            $coin_change = number_format(($change / $coin->coin), 2);
+            if (!(fmod($coin_change, 1) !== 0.00)){
+                if ((int) $coin->amount >= intval($coin_change)){
+                    return array("coin" => $coin, "total_coins" => intval($coin_change));
+                }
+            }
+        }
+        return false;
     }
 }

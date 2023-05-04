@@ -15,4 +15,9 @@ class ProductRepository
     {
         return Product::where($where)->first();
     }
+
+    public static function update($model, $data)
+    {
+        return $model->update($data);
+    }
 }

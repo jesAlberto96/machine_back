@@ -13,6 +13,6 @@ class product extends Model
         'name',
         'path_img',
         'price',
-        'cant',
+        'amount',
     ];
 }
